@@ -11,6 +11,12 @@ tags:
     description: Assignable content
   - name: Assignment
     description: Assign content to a client
+  - name: Integration
+    description: Webhook handlers
+  - name: Analytics
+    description: Record analytics events
+  - name: Client
+    description: Client assigned content
 
 paths:
   /app/installed:
@@ -36,7 +42,7 @@ paths:
       tags:
         - Content
       summary: Get all content
-      description: Get all content
+      description: Get all available content, when a tenent ID is provided only content available to that tenent's installed app will be returned
       operationId: getContent
       parameters:
         - name: page
@@ -178,7 +184,7 @@ paths:
       tags:
         - Assignment
       summary: Assign content to a client
-      description: Assign content to a client
+      description: Assign content to a client, this will create a new assignment and store the versions of the content so that the assignment is 'sticky'
       operationId: assignContent
       requestBody:
         content:
@@ -293,7 +299,7 @@ paths:
       tags:
         - Assignment
       summary: Get player configuration for assignment
-      description: Get player configuration for assignment
+      description: Get player configuration for assignment, this will is designed to be called/used by the player SDKs when loading the player.
       operationId: getPlayerConfig
       parameters:
         - name: id
@@ -481,6 +487,15 @@ components:
         clientEmail:
           type: string
           example: ""
+        advisorFirstName:
+          type: string
+          example: "John"
+        advisorLastName:
+          type: string
+          example: "Smith"
+        advisorEmail:
+          type: string
+          example: "john.smith@example.com"
         status:
           type: string
           example: "completed"
@@ -519,7 +534,8 @@ components:
           example: Final Salary
         description:
           type: string
-          example: ""
+          example: "Long description of the content"
+        
     PaginationParameters:
       type: object
       properties:
