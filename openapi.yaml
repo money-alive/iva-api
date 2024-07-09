@@ -1,0 +1,549 @@
+openapi: 3.0.3
+info:
+  title: IVA Content API
+  description: |
+    
+  contact:
+    email: declan.cook@moneyalive.co.uk
+  version: 0.1.0
+tags:
+  - name: Content
+    description: Assignable content
+  - name: Assignment
+    description: Assign content to a client
+
+paths:
+  /app/installed:
+    post:
+      tags:
+        - Integration
+      summary: AppInstalled webhook handler
+      description: To be registered as a [AppInstalled](https://developer.gb.intelliflo.net/apis/events#appinstalled) webhook for the intelliflo apps
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ok"
+
+  /content:
+    get:
+      tags:
+        - Content
+      summary: Get all content
+      description: Get all content
+      operationId: getContent
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            example: 1
+        - name: perPage
+          in: query
+          description: Number of items per page (max 100)
+          required: false
+          schema:
+            type: integer
+            example: 25
+        - name: tenentId
+          in: query
+          description: Filter by tenent ID
+          required: false
+          schema:
+            type: string
+            example: 1234
+
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationResponse'
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Content'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Validation error message"
+                  errors:
+                    type: array
+                    items: 
+                      type: object
+                      properties:
+                        field: 
+                          type: string
+                          example: "page"
+                        message:
+                          type: string
+                          example: "Field must be an integer"
+  /content/{id}:
+    get:
+      tags:
+        - Content
+      summary: Get content by ID
+      description: Get content by ID
+      operationId: getContentById
+      parameters:
+        - name: id
+          in: path
+          description: ID of content to return
+          required: true
+          schema:
+            type: string
+            example: final-salary
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Content'
+  /assignment:
+    get:
+      tags:
+        - Assignment
+      summary: Get all assignments
+      description: Get all assignments filtered by query parameters
+      operationId: getAssignments
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            example: 1
+        - name: perPage
+          in: query
+          description: Number of items per page (max 100)
+          required: false
+          schema:
+            type: integer
+            example: 25
+        - name: advisorEmail
+          in: query
+          description: Filter by advisor email
+          required: false
+          schema:
+            type: string
+            example: "john.smith@example.com"
+        - name: tenentId
+          in: query
+          description: Filter by tenent ID
+          required: false
+          schema:
+            type: string
+            example: 1234
+        - name: status
+          in: query
+          description: Filter by status
+          required: false
+          schema:
+            type: string
+            example: "completed"
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationResponse'
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Assignment'
+
+    post:
+      tags:
+        - Assignment
+      summary: Assign content to a client
+      description: Assign content to a client
+      operationId: assignContent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                clientId:
+                  type: string
+                  example: 1234
+                contentId:
+                  type: string
+                  example: final-salary
+                tenentId:
+                  type: string
+                  example: 1234
+                clientFirstName:
+                  type: string
+                  example: "Jane"
+                clientLastName:
+                  type: string
+                  example: "Doe"
+                clientEmail:
+                  type: string
+                  example: "jane.doe@example.com"
+                advisorFirstName:
+                  type: string
+                  example: "John"
+                advisorLastName:
+                  type: string
+                  example: "Smith"
+                advisorEmail:
+                  type: string
+                  example: "john.smith@example.com"
+              required:
+                - clientId
+                - contentId
+                - tenentId
+                - clientFirstName
+                - clientLastName
+                - clientEmail
+                - advisorFirstName
+                - advisorLastName
+                - advisorEmail
+                
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assignmentId:
+                    type: string
+                    example: 1234
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Validation error message"
+                  errors:
+                    type: array
+                    items: 
+                      type: object
+                      properties:
+                        field: 
+                          type: string
+                          example: "clientId"
+                        message:
+                          type: string
+                          example: "Field is required"
+  /assignment/{id}: 
+    get:
+      tags:
+        - Assignment
+      summary: Get assignment by ID
+      description: Get assignment by ID
+      operationId: getAssignmentById
+      parameters:
+        - name: id
+          in: path
+          description: ID of assignment to return
+          required: true
+          schema:
+            type: string
+            example: 1234
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Assignment not found"
+  /assignment/{id}/player:
+    get:
+      tags:
+        - Assignment
+      summary: Get player configuration for assignment
+      description: Get player configuration for assignment
+      operationId: getPlayerConfig
+      parameters:
+        - name: id
+          in: path
+          description: ID of assignment to return player configuration for
+          required: true
+          schema:
+            type: string
+            example: 1234
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assignmentId:
+                    type: string
+                    example: 1234
+                  config:
+                    type: object
+                    example: { "track": [] }
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Assignment not found"
+  /assignment/{id}/pdf:
+    post: 
+      tags:
+        - Assignment
+      summary: Generate PDF for assignment
+      description: Generate PDF for assignment, this API call will return the URL to the generated PDF. However there is no garentee that the PDF will be available straight away. A webhook will be used to notify the completion of the PDF.
+      operationId: generatePdf
+      parameters:
+        - name: id
+          in: path
+          description: ID of assignment to generate PDF for
+          required: true
+          schema:
+            type: string
+            example: 1234
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assignmentId:
+                    type: string
+                    example: 1234
+                  pdfUrl:
+                    type: string
+                    example: "https://cdn.example.com/assignment/1234.pdf"
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Assignment not found"
+  /analytics:
+    post:
+      tags:
+        - Analytics
+      summary: Record analytics event
+      description: Record analytics event
+      operationId: recordAnalytics
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                assignmentId:
+                  type: string
+                  example: 1234
+                event:
+                  type: string
+                  example: "view"
+                data:
+                  type: object
+              required:
+                - assignmentId
+                - event
+                - data
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  analyticsId:
+                    type: string
+                    example: 1234
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Validation error message"
+                  errors:
+                    type: array
+                    items: 
+                      type: object
+                      properties:
+                        field: 
+                          type: string
+                          example: "clientId"
+                        message:
+                          type: string
+                          example: "Field is required"
+  /client/{id}:
+    get:
+      tags:
+        - Client
+      summary: Get clients assigned content
+      description: Get all assigned content for a client
+      operationId: getClientContent
+      parameters:
+        - name: id
+          in: path
+          description: ID of client to return content for
+          required: true
+          schema:
+            type: string
+            example: 1234
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Assignment'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Client not found"
+
+components:
+  schemas:
+    Assignment: 
+      type: object
+      properties:
+        assignmentId:
+          type: string
+          example: 1234
+        clientId:
+          type: string
+          example: 1234
+        tenentId:
+          type: string
+          example: 1234
+        clientFirstName:
+          type: string
+          example: "Jane"
+        clientLastName:
+          type: string
+          example: "Doe"
+        clientEmail:
+          type: string
+          example: ""
+        status:
+          type: string
+          example: "completed"
+        progress:
+          type: string
+          example: 1-14
+        content:
+          type: object
+          example: { "id": "final-salary", "type": "box-set", "title": "Final Salary" }
+        questions:
+          type: number
+          example: 5
+        questionData:
+          type: array
+          items:
+            type: object
+            properties:
+              chapter:
+                type: number
+                example: 1
+              question:
+                type: string
+                example: Sorry can you explain more?
+
+    Content:
+      type: object
+      properties:
+        id:
+          type: string
+          example: final-salary
+        type:
+          type: string
+          example: box-set
+        title:
+          type: string
+          example: Final Salary
+        description:
+          type: string
+          example: ""
+    PaginationParameters:
+      type: object
+      properties:
+        page:
+          type: integer
+          example: 1
+        perPage:
+          type: integer
+          example: 25
+    PaginationResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+          example: 100
+        page:
+          type: integer
+          example: 1
+        perPage:
+          type: integer
+          example: 25
+    
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
