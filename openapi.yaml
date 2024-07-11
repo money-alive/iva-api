@@ -5,7 +5,7 @@ info:
     The IVA content API is designed to allow the assignment of content to clients, recording analytics events and generating a report PDF for an assignment.
   contact:
     email: declan.cook@moneyalive.co.uk
-  version: 0.1.0
+  version: 0.2.0
 tags:
   - name: Content
     description: Assignable content
@@ -345,7 +345,7 @@ paths:
       tags:
         - Assignment
       summary: Generate PDF for assignment
-      description: Generate PDF for assignment, this API call will return the URL to the generated PDF. However there is no garentee that the PDF will be available straight away. A webhook will be used to notify the completion of the PDF.
+      description: Generate PDF for assignment, this API call will return the URL to the generated PDF and the status of the generation. However there is no garentee that the PDF will be available straight away. A webhook will be used to notify the completion of the PDF.
       operationId: generatePdf
       parameters:
         - name: id
@@ -356,6 +356,23 @@ paths:
             type: string
             example: 1234
       responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assignmentId:
+                    type: string
+                    example: 1234
+                  pdfUrl:
+                    type: string
+                    example: "https://cdn.example.com/assignment/1234.pdf"
+                  status:
+                    type: string
+                    example: "complete"
+            
         '202':
           description: Accepted
           content:
@@ -369,6 +386,9 @@ paths:
                   pdfUrl:
                     type: string
                     example: "https://cdn.example.com/assignment/1234.pdf"
+                  status:
+                    type: string
+                    example: "generating"
         '404':
           description: Not Found
           content:
@@ -509,6 +529,12 @@ components:
         progress:
           type: string
           example: 1-14
+        assignedAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
         content:
           type: object
           example: { "id": "final-salary", "type": "box-set", "title": "Final Salary" }
