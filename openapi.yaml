@@ -5,7 +5,7 @@ info:
     The IVA content API is designed to allow the assignment of content to clients, recording analytics events and generating a report PDF for an assignment.
   contact:
     email: declan.cook@moneyalive.co.uk
-  version: 0.2.0
+  version: 0.3.0
 tags:
   - name: Content
     description: Assignable content
@@ -130,6 +130,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Content'
+  /content/player:
+    get:
+      tags:
+        - Content
+      summary: Get player configuration for content
+      description: Get player configuration for content, this will always return the latest player configuration for previewing the content
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assignmentId:
+                    type: string
+                    example: 1234
+                  config:
+                    type: object
+                    example: { "track": [] }
+      
   /assignment:
     get:
       tags:
@@ -355,6 +376,13 @@ paths:
           schema:
             type: string
             example: 1234
+        - name: callbackURL
+          in: query
+          description: URL to send the webhook to
+          required: false
+          schema:
+            type: string
+            example: "https://example.com/webhook"
       responses:
         '200':
           description: Successful operation
