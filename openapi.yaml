@@ -42,7 +42,7 @@ paths:
       tags:
         - Content
       summary: Get all content
-      description: Get all available content, when a tenent ID is provided only content available to that tenent's installed app will be returned
+      description: Get all available content, when a tenant ID is provided only content available to that tenant's installed app will be returned
       operationId: getContent
       parameters:
         - name: page
@@ -59,9 +59,9 @@ paths:
           schema:
             type: integer
             example: 25
-        - name: tenentId
+        - name: tenantId
           in: query
-          description: Filter by tenent ID
+          description: Filter by tenant ID
           required: false
           schema:
             type: string
@@ -180,9 +180,9 @@ paths:
           schema:
             type: string
             example: "john.smith@example.com"
-        - name: tenentId
+        - name: tenantId
           in: query
-          description: Filter by tenent ID
+          description: Filter by tenant ID
           required: false
           schema:
             type: string
@@ -226,7 +226,7 @@ paths:
                 contentId:
                   type: string
                   example: final-salary
-                tenentId:
+                tenantId:
                   type: string
                   example: 1234
                 clientFirstName:
@@ -250,7 +250,7 @@ paths:
               required:
                 - clientId
                 - contentId
-                - tenentId
+                - tenantId
                 - clientFirstName
                 - clientLastName
                 - clientEmail
@@ -530,7 +530,7 @@ components:
         clientId:
           type: string
           example: 1234
-        tenentId:
+        tenantId:
           type: string
           example: 1234
         clientFirstName:
