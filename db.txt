@@ -1,0 +1,56 @@
+Table Tenants {
+  id integer [primary key]
+  app_name varchar
+  app_id varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table Assignments {
+  id integer [primary key]
+  client_first_name varchar
+  client_last_name varchar
+  client_email varchar
+  advisor_first_name varchar
+  advisor_last_name varchar
+  advisor_email varchar
+  content_id varchar
+  status varchar
+  pdf_url varchar
+  tenant_id integer
+
+  created_at timestamp
+}
+
+Table PlayerConfigs {
+  id integer [primary key]
+  assignment_id integer
+  content_item_id varchar
+  config json
+
+  created_at timestamp
+}
+
+Table Analytics {
+  id integer [primary key]
+  event varchar
+  data varchar
+
+  content_item_id varchar  
+  assignment_id varchar
+
+  created_at timestamp
+}
+
+Table APIKeys {
+  id integer [primary key]
+  api_key varchar
+  revoked bool
+  created_at timestamp
+}
+
+Ref: Analytics.assignment_id > Assignments.id
+
+Ref: PlayerConfigs.assignment_id > Assignments.id
+
+Ref: Assignments.tenant_id > Tenants.id
