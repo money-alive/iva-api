@@ -5,7 +5,7 @@ info:
     The IVA content API is designed to allow the assignment of content to clients, recording analytics events and generating a report PDF for an assignment.
   contact:
     email: declan.cook@moneyalive.co.uk
-  version: 0.3.3
+  version: 0.3.4
 tags:
   - name: Content
     description: Assignable content
@@ -579,20 +579,23 @@ components:
         content:
           type: object
           example: { "id": "final-salary", "type": "box-set", "title": "Final Salary" }
-        questions:
-          type: number
-          example: 5
-        questionData:
-          type: array
-          items:
-            type: object
-            properties:
-              chapter:
-                type: number
-                example: 1
-              question:
-                type: string
-                example: Sorry can you explain more?
+        meta:
+          type: object
+          properties:
+            questions:
+              type: number
+              example: 5
+            questionData:
+              type: array
+              items:
+                type: object
+                properties:
+                  chapter:
+                    type: number
+                    example: 1
+                  question:
+                    type: string
+                    example: Sorry can you explain more?
 
     Content:
       type: object
