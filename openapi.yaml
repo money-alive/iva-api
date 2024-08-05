@@ -5,7 +5,7 @@ info:
     The IVA content API is designed to allow the assignment of content to clients, recording analytics events and generating a report PDF for an assignment.
   contact:
     email: declan.cook@moneyalive.co.uk
-  version: 0.3.6
+  version: 0.4.0
 tags:
   - name: Content
     description: Assignable content
@@ -142,7 +142,7 @@ paths:
       tags:
         - Content
       summary: Get player configuration for content
-      description: Get player configuration for content, this will always return the latest player configuration for previewing the content
+      description: Get player configuration for content, this will always return the latest player configuration for previewing the content. The config property will vary depending on the content type, see the Schema section for examples
       parameters:
         - name: id
           in: path
@@ -164,8 +164,6 @@ paths:
                     example: 1234
                   config:
                     type: object
-                    example: { "track": [] }
-      
   /assignment:
     get:
       tags:
@@ -342,7 +340,7 @@ paths:
       tags:
         - Assignment
       summary: Get player configuration for assignment
-      description: Get player configuration for assignment, this will is designed to be called/used by the player SDKs when loading the player.
+      description: Get player configuration for assignment, this will is designed to be called/used by the player SDKs when loading the player. The config property will vary depending on the content type, see the Schema section for examples
       operationId: getPlayerConfig
       parameters:
         - name: id
@@ -363,9 +361,20 @@ paths:
                   assignmentId:
                     type: string
                     example: 1234
+                  playerTerms:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: default
+                      text:
+                        type: string
+                        example: "By continuing you agree to the terms and conditions"
+                      version:
+                        type: number
+                        example: "1.1"
                   config:
                     type: object
-                    example: { "track": [] }
         '404':
           description: Not Found
           content:
@@ -628,7 +637,137 @@ components:
           items:
             type: string
           example: ["risk"]
-        
+      
+    BoxsetConfig:
+      description: Box set player configuration object returned by the player APIs
+      type: object
+      properties:
+        boxsetId:
+          type: string
+          example: "1234"
+        track:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrackItem'
+        topic:
+          type: object
+          properties:
+            defaultTrackImage:
+              $ref: '#/components/schemas/File'
+            features:
+              type: object
+              properties:
+                responsivePlayer: 
+                  type: boolean
+                  example: true
+                videoBackground: 
+                  type: boolean
+                  example: true
+            gradientEnd:
+              type: string
+              example: "#000000"
+            gradientStart:
+              type: string
+              example: "#FFFFFF"
+            primaryColor:
+              type: string
+              example: "#FFFFFF"
+            secondaryColor:
+              type: string
+              example: "#000000"
+            topicImageUrl:
+              $ref: '#/components/schemas/File'
+            topicComplete:
+              type: object
+            trackItemComplete:
+              type: object
+            trackItemReplay:
+              type: object
+                
+
+    VideoCanvasConfig:
+      description: Video canvas player configuration object returned by the player APIs
+      type: object
+      properties:
+        vcId:
+          type: string
+          example: "1234"
+
+    File:
+      type: object
+      properties:
+        contentType:
+          type: string
+          example: "image/png"
+        url:
+          type: string
+          example: "https://cdn.example.com/image.png"
+
+    TrackItem:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "video-31"
+        type:
+          type: string
+          example: "video"
+        content:
+          type: object
+          properties:
+            videoId:
+              type: number
+              example: 31
+            version:
+              type: number
+              example: 1
+            title:
+              type: string
+              example: "Final Salary"
+            duration:
+              type: number
+              example: 183
+            humanDuration:
+              type: string
+              example: "5min 48sec"
+            features:
+              type: array
+            contentModel:
+              type: string
+              example: "video"
+            captionsSrc:
+              type: string
+              example: "https://cdn.example.com/captions.vtt"
+            videoSrc:
+              type: object
+              properties:
+                m3u8:
+                  type: string
+                  example: "https://cdn.example.com/video.m3u8"
+                mp4:
+                  type: string
+                  example: "https://cdn.example.com/video.mp4"
+                mpd:
+                  type: string
+                  example: "https://cdn.example.com/video.mpd"
+        image:
+          $ref: '#/components/schemas/File'
+        progress:
+          type: number
+          example: 0
+        trackdata-completed:
+          type: boolean
+          example: false
+        trackdata-locked:
+          type: boolean
+          example: false
+        trackdata-notice-closed:
+          type: boolean
+          example: false
+        trackdata-skipped:
+          type: boolean
+          example: false
+
     PaginationParameters:
       type: object
       properties:
