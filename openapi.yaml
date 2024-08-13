@@ -5,7 +5,7 @@ info:
     The IVA content API is designed to allow the assignment of content to clients, recording analytics events and generating a report PDF for an assignment.
   contact:
     email: declan.cook@moneyalive.co.uk
-  version: 0.4.0
+  version: 0.4.1
 tags:
   - name: Content
     description: Assignable content
@@ -25,6 +25,28 @@ paths:
         - Integration
       summary: AppInstalled webhook handler
       description: To be registered as a [AppInstalled](https://developer.gb.intelliflo.net/apis/events#appinstalled) webhook for the intelliflo apps
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                installedFor:
+                  type: object
+                  properties:
+                    tenant:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "1234"
+                payload:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
       responses:
         '200':
           description: Successful operation
@@ -637,6 +659,9 @@ components:
           items:
             type: string
           example: ["risk"]
+        publisher:
+          type: string
+          example: "Money Alive"
       
     BoxsetConfig:
       description: Box set player configuration object returned by the player APIs
