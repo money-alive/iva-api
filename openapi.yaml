@@ -5,7 +5,7 @@ info:
     The IVA content API is designed to allow the assignment of content to clients, recording analytics events and generating a report PDF for an assignment.
   contact:
     email: declan.cook@moneyalive.co.uk
-  version: 0.4.2
+  version: 0.5.0
 tags:
   - name: Content
     description: Assignable content
@@ -229,6 +229,13 @@ paths:
           schema:
             type: string
             example: "completed"
+        - name: includeArchived
+          in: query
+          description: Include archived assignments
+          required: false
+          schema:
+            type: boolean
+            example: false
       responses:
         '200':
           description: Successful operation
@@ -419,6 +426,47 @@ paths:
                   message:
                     type: string
                     example: "Assignment not found"
+  /assignment/{id}/archive:
+    post:
+      tags:
+        - Assignment
+      summary: Archive/Unarchive assignment
+      description: Archive/Unarchive assignment, this will set the archived property of the assignment to true or false
+      operationId: archiveAssignment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                archive:
+                  type: boolean
+                  example: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assignmentId:
+                    type: string
+                    example: 1234
+                  archived:
+                    type: boolean
+                    example: true
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Assignment not found"
+      
   /assignment/{id}/pdf:
     post: 
       tags:
@@ -646,6 +694,9 @@ components:
                   question:
                     type: string
                     example: Sorry can you explain more?
+        archived:
+          type: boolean
+          example: false
 
     Content:
       type: object
