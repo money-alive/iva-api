@@ -24,7 +24,7 @@ paths:
       tags:
         - Integration
       summary: AppInstalled webhook handler
-      description: To be registered as a [AppInstalled](https://developer.gb.intelliflo.net/apis/events#appinstalled) webhook for the intelliflo apps
+      description: Webhook to be called when an app is installed.
       requestBody:
         content:
           application/json:
@@ -40,6 +40,9 @@ paths:
                         id:
                           type: string
                           example: "1234"
+                        name:
+                          type: string
+                          example: "Money Alive"
                 payload:
                   type: object
                   properties:
@@ -846,6 +849,8 @@ components:
         progress:
           type: number
           example: 0
+        personalisation:
+          type: object
         trackdata-completed:
           type: boolean
           example: false
