@@ -5,7 +5,7 @@ info:
     The IVA content API is designed to allow the assignment of content to clients, recording analytics events and generating a report PDF for an assignment.
   contact:
     email: declan.cook@moneyalive.co.uk
-  version: 0.5.2
+  version: 0.6.0
 tags:
   - name: Content
     description: Assignable content
@@ -24,7 +24,7 @@ paths:
       tags:
         - Integration
       summary: AppInstalled webhook handler
-      description: Webhook to be called when an app is installed.
+      description: Webhook to be called when an app is installed by an adviser
       requestBody:
         content:
           application/json:
@@ -43,6 +43,12 @@ paths:
                         name:
                           type: string
                           example: "Money Alive"
+                    adviser:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "1234"
                 payload:
                   type: object
                   properties:
@@ -62,12 +68,67 @@ paths:
                     type: string
                     example: "Ok"
 
+  /app/adviser/{id}/delete:
+    post:
+      tags:
+        - Integration
+      summary: Delete all data for a adviser
+      description: Delete all data for a adviser, this will remove all assignments, PDFs and analytics data
+      operationId: deleteAdviserData
+      parameters:
+        - name: id
+          in: path
+          description: Id of adviser to delete data for
+          required: true
+          schema:
+            type: string
+            example: 1234
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ok"
+
+  /app/tenant/{id}/delete:
+    post:
+      tags:
+        - Integration
+      summary: Delete all data for tenant
+      description: Delete all data for a tenant, this will remove all assignments, PDFs and analytics data
+      operationId: deleteTenantData
+      parameters:
+        - name: id
+          in: path
+          description: ID of tenant to delete data for
+          required: true
+          schema:
+            type: string
+            example: 1234
+                    
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ok"
+
   /content:
     get:
       tags:
         - Content
       summary: Get all content
-      description: Get all available content, when a tenant ID is provided only content available to that tenant's installed app will be returned
+      description: Get all available content, when a adviserId is provided only content available to that adviser's installed app will be returned
       operationId: getContent
       parameters:
         - name: page
@@ -84,9 +145,9 @@ paths:
           schema:
             type: integer
             example: 25
-        - name: tenantId
+        - name: adviserId
           in: query
-          description: Filter by tenant ID
+          description: Filter by adviser id
           required: false
           schema:
             type: string
@@ -211,16 +272,16 @@ paths:
           schema:
             type: integer
             example: 25
-        - name: advisorEmail
+        - name: adviserId
           in: query
-          description: Filter by advisor email
+          description: Filter by adviser id
           required: false
           schema:
             type: string
-            example: "john.smith@example.com"
+            example: "1234"
         - name: tenantId
           in: query
-          description: Filter by tenant ID
+          description: Filter by tenant id
           required: false
           schema:
             type: string
@@ -283,6 +344,9 @@ paths:
                 clientEmail:
                   type: string
                   example: "jane.doe@example.com"
+                advisorId:
+                  type: string
+                  example: 1234
                 advisorFirstName:
                   type: string
                   example: "John"
@@ -299,6 +363,7 @@ paths:
                 - clientFirstName
                 - clientLastName
                 - clientEmail
+                - advisorId
                 - advisorFirstName
                 - advisorLastName
                 - advisorEmail
@@ -309,11 +374,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  assignmentId:
-                    type: string
-                    example: 1234
+                $ref: '#/components/schemas/Assignment'
         '422':
           description: Unprocessable Entity
           content:
