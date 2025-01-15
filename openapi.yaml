@@ -5,7 +5,7 @@ info:
     The IVA content API is designed to allow the assignment of content to clients, recording analytics events and generating a report PDF for an assignment.
   contact:
     email: declan.cook@moneyalive.co.uk
-  version: 0.6.2
+  version: 0.7.0
 tags:
   - name: Content
     description: Assignable content
@@ -24,7 +24,7 @@ paths:
       tags:
         - Integration
       summary: AppInstalled webhook handler
-      description: Webhook to be called when an app is installed by an adviser
+      description: Webhook to be called when an app is installed by a user
       requestBody:
         content:
           application/json:
@@ -43,7 +43,7 @@ paths:
                         name:
                           type: string
                           example: "Money Alive"
-                    adviser:
+                    user:
                       type: object
                       properties:
                         id:
@@ -57,7 +57,7 @@ paths:
                     name:
                       type: string
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
@@ -72,7 +72,7 @@ paths:
       tags:
         - Integration
       summary: AppInstalled webhook handler
-      description: Webhook to be called when an app is uninstalled by an adviser
+      description: Webhook to be called when an app is uninstalled by a user
       requestBody:
         content:
           application/json:
@@ -88,7 +88,7 @@ paths:
                         id:
                           type: string
                           example: "1234"
-                    adviser:
+                    user:
                       type: object
                       properties:
                         id:
@@ -102,7 +102,7 @@ paths:
                     name:
                       type: string
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
@@ -112,23 +112,23 @@ paths:
                   message:
                     type: string
                     example: "Ok"
-  /app/adviser/{id}/delete:
+  /app/user/{id}/delete:
     post:
       tags:
         - Integration
-      summary: Delete all data for a adviser
-      description: Delete all data for a adviser, this will remove all assignments, PDFs and analytics data
-      operationId: deleteAdviserData
+      summary: Delete all data for a user
+      description: Delete all data for a user, this will remove all assignments, PDFs and analytics data
+      operationId: deleteUserData
       parameters:
         - name: id
           in: path
-          description: Id of adviser to delete data for
+          description: Id of user to delete data for
           required: true
           schema:
             type: string
             example: 1234
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
@@ -154,9 +154,9 @@ paths:
           schema:
             type: string
             example: 1234
-                    
+
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
@@ -181,9 +181,9 @@ paths:
           schema:
             type: string
             example: 1234
-                    
+
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
@@ -199,7 +199,7 @@ paths:
       tags:
         - Content
       summary: Get all content
-      description: Get all available content, when a adviserId is provided only content available to that adviser's installed app will be returned
+      description: Get all available content, when a userId is provided only content available to that user's installed app will be returned
       operationId: getContent
       parameters:
         - name: page
@@ -216,9 +216,9 @@ paths:
           schema:
             type: integer
             example: 25
-        - name: adviserId
+        - name: userId
           in: query
-          description: Filter by adviser id
+          description: Filter by user id
           required: false
           schema:
             type: string
@@ -246,19 +246,19 @@ paths:
             example: "risk"
 
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/PaginationResponse'
+                  - $ref: "#/components/schemas/PaginationResponse"
                 properties:
                   items:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Content'
-        '400':
+                      $ref: "#/components/schemas/Content"
+        "400":
           description: Bad request
           content:
             application/json:
@@ -270,10 +270,10 @@ paths:
                     example: "Validation error message"
                   errors:
                     type: array
-                    items: 
+                    items:
                       type: object
                       properties:
-                        field: 
+                        field:
                           type: string
                           example: "page"
                         message:
@@ -295,12 +295,12 @@ paths:
             type: string
             example: final-salary
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Content'
+                $ref: "#/components/schemas/Content"
   /content/{id}/player:
     get:
       tags:
@@ -316,7 +316,7 @@ paths:
             type: string
             example: final-salary
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
@@ -350,9 +350,9 @@ paths:
           schema:
             type: integer
             example: 25
-        - name: adviserId
+        - name: userId
           in: query
-          description: Filter by adviser id
+          description: Filter by user id
           required: false
           schema:
             type: string
@@ -379,18 +379,18 @@ paths:
             type: boolean
             example: false
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/PaginationResponse'
+                  - $ref: "#/components/schemas/PaginationResponse"
                 properties:
                   items:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Assignment'
+                      $ref: "#/components/schemas/Assignment"
 
     post:
       tags:
@@ -422,7 +422,7 @@ paths:
                 clientEmail:
                   type: string
                   example: "jane.doe@example.com"
-                adviserId:
+                userId:
                   type: string
                   example: 1234
                 adviserFirstName:
@@ -441,19 +441,19 @@ paths:
                 - clientFirstName
                 - clientLastName
                 - clientEmail
-                - adviserId
+                - userId
                 - adviserFirstName
                 - adviserLastName
                 - adviserEmail
-                
+
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Assignment'
-        '422':
+                $ref: "#/components/schemas/Assignment"
+        "422":
           description: Unprocessable Entity
           content:
             application/json:
@@ -465,16 +465,16 @@ paths:
                     example: "Validation error message"
                   errors:
                     type: array
-                    items: 
+                    items:
                       type: object
                       properties:
-                        field: 
+                        field:
                           type: string
                           example: "clientId"
                         message:
                           type: string
                           example: "Field is required"
-  /assignment/{id}: 
+  /assignment/{id}:
     get:
       tags:
         - Assignment
@@ -490,13 +490,13 @@ paths:
             type: string
             example: 1234
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Assignment'
-        '404':
+                $ref: "#/components/schemas/Assignment"
+        "404":
           description: Not Found
           content:
             application/json:
@@ -522,7 +522,7 @@ paths:
             type: string
             example: 1234
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
@@ -558,7 +558,7 @@ paths:
                         example: false
                   config:
                     type: object
-        '404':
+        "404":
           description: Not Found
           content:
             application/json:
@@ -585,7 +585,7 @@ paths:
                   type: boolean
                   example: true
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
@@ -598,7 +598,7 @@ paths:
                   archived:
                     type: boolean
                     example: true
-        '404':
+        "404":
           description: Not Found
           content:
             application/json:
@@ -608,9 +608,9 @@ paths:
                   message:
                     type: string
                     example: "Assignment not found"
-      
+
   /assignment/{id}/pdf:
-    post: 
+    post:
       tags:
         - Assignment
       summary: Generate PDF for assignment
@@ -634,7 +634,7 @@ paths:
                   type: string
                   example: "https://example.com/webhook"
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
@@ -650,8 +650,8 @@ paths:
                   status:
                     type: string
                     example: "complete"
-            
-        '202':
+
+        "202":
           description: Accepted
           content:
             application/json:
@@ -667,7 +667,7 @@ paths:
                   status:
                     type: string
                     example: "generating"
-        '404':
+        "404":
           description: Not Found
           content:
             application/json:
@@ -706,7 +706,7 @@ paths:
                 - event
                 - data
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
@@ -716,7 +716,7 @@ paths:
                   analyticsId:
                     type: string
                     example: 1234
-        '422':
+        "422":
           description: Unprocessable Entity
           content:
             application/json:
@@ -728,10 +728,10 @@ paths:
                     example: "Validation error message"
                   errors:
                     type: array
-                    items: 
+                    items:
                       type: object
                       properties:
-                        field: 
+                        field:
                           type: string
                           example: "clientId"
                         message:
@@ -753,15 +753,15 @@ paths:
             type: string
             example: 1234
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Assignment'
-        '404':
+                  $ref: "#/components/schemas/Assignment"
+        "404":
           description: Not Found
           content:
             application/json:
@@ -774,7 +774,7 @@ paths:
 
 components:
   schemas:
-    Assignment: 
+    Assignment:
       type: object
       properties:
         assignmentId:
@@ -818,7 +818,8 @@ components:
           format: date-time
         content:
           type: object
-          example: { "id": "final-salary", "type": "box-set", "title": "Final Salary" }
+          example:
+            { "id": "final-salary", "type": "box-set", "title": "Final Salary" }
         meta:
           type: object
           properties:
@@ -867,7 +868,7 @@ components:
         publisher:
           type: string
           example: "Money Alive"
-      
+
     BoxsetConfig:
       description: Box set player configuration object returned by the player APIs
       type: object
@@ -878,7 +879,7 @@ components:
         track:
           type: array
           items:
-            $ref: '#/components/schemas/TrackItem'
+            $ref: "#/components/schemas/TrackItem"
         topic:
           type: object
           properties:
@@ -886,14 +887,14 @@ components:
               type: string
               example: "Final Salary"
             defaultTrackImage:
-              $ref: '#/components/schemas/File'
+              $ref: "#/components/schemas/File"
             features:
               type: object
               properties:
-                responsivePlayer: 
+                responsivePlayer:
                   type: boolean
                   example: true
-                videoBackground: 
+                videoBackground:
                   type: boolean
                   example: true
             gradientEnd:
@@ -909,14 +910,13 @@ components:
               type: string
               example: "#000000"
             topicImageUrl:
-              $ref: '#/components/schemas/File'
+              $ref: "#/components/schemas/File"
             topicComplete:
               type: object
             trackItemComplete:
               type: object
             trackItemReplay:
               type: object
-                
 
     VideoCanvasConfig:
       description: Video canvas player configuration object returned by the player APIs
@@ -984,7 +984,7 @@ components:
                   type: string
                   example: "https://cdn.example.com/video.mpd"
         image:
-          $ref: '#/components/schemas/File'
+          $ref: "#/components/schemas/File"
         progress:
           type: number
           example: 0
@@ -1005,7 +1005,6 @@ components:
         trackdata-progress:
           type: integer
           example: 0
-
 
     PaginationParameters:
       type: object
@@ -1028,7 +1027,7 @@ components:
         perPage:
           type: integer
           example: 25
-    
+
   securitySchemes:
     api_key:
       type: apiKey
