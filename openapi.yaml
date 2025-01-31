@@ -5,7 +5,7 @@ info:
     The IVA content API is designed to allow the assignment of content to clients, recording analytics events and generating a report PDF for an assignment.
   contact:
     email: declan.cook@moneyalive.co.uk
-  version: 0.7.0
+  version: 0.7.1
 tags:
   - name: Content
     description: Assignable content
@@ -202,7 +202,7 @@ paths:
       description: Get all available content, when a userId is provided only content available to that user's installed app will be returned
       operationId: getContent
       parameters:
-        - name: page
+        - name: currentPage
           in: query
           description: Page number
           required: false
@@ -275,7 +275,7 @@ paths:
                       properties:
                         field:
                           type: string
-                          example: "page"
+                          example: "currentPage"
                         message:
                           type: string
                           example: "Field must be an integer"
@@ -336,7 +336,7 @@ paths:
       description: Get all assignments filtered by query parameters
       operationId: getAssignments
       parameters:
-        - name: page
+        - name: currentPage
           in: query
           description: Page number
           required: false
@@ -1021,7 +1021,7 @@ components:
         total:
           type: integer
           example: 100
-        page:
+        currentPage:
           type: integer
           example: 1
         perPage:
