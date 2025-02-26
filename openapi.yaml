@@ -5,7 +5,7 @@ info:
     The IVA content API is designed to allow the assignment of content to clients, recording analytics events and generating a report PDF for an assignment.
   contact:
     email: declan.cook@moneyalive.co.uk
-  version: 0.7.1
+  version: 0.7.2
 tags:
   - name: Content
     description: Assignable content
@@ -67,6 +67,27 @@ paths:
                   message:
                     type: string
                     example: "Ok"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Validation error message"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: "payload.id"
+                        message:
+                          type: string
+                          example: "ID is required"
   /app/uninstalled:
     post:
       tags:
@@ -112,6 +133,27 @@ paths:
                   message:
                     type: string
                     example: "Ok"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Validation error message"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: "uninstalledFor.user.id"
+                        message:
+                          type: string
+                          example: "User ID is required"
   /app/user/{id}/delete:
     post:
       tags:
